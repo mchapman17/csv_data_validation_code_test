@@ -14,6 +14,11 @@ describe StateProcessor do
       allow(CSV).to receive(:foreach).and_yield([1, "Tasmania"]).and_yield([2, "Victoria"])
       expect(processor.valid_state_codes).to eq [1, 2]
     end
+
+    it "raises an error if the states file doesn't exist" do
+      stub_const("StateProcessor::STATES_FILE", "invalid file")
+      expect { processor }.to raise_error(LoadError)
+    end
   end
 
 end

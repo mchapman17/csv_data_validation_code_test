@@ -5,14 +5,19 @@ require_relative '../lib/state_processor.rb'
 
 begin
   state_processor = StateProcessor.new
+  validator = Validator.new(valid_state_codes: state_processor.valid_state_codes)
 
   ARGV.each do |file|
-    validator = Validator.new(file, state_processor.valid_state_codes)
-    validator.validate
+    begin
+      validator.validate(file)
+    rescue CSV::MalformedCSVError
+      puts "Malformed CSV file: #{file}"
+      next
+    end
   end
 
-rescue StandardError => err
-  puts "\nAn error has occurred: #{err.message}"
+# rescue StandardError => err
+#   puts "\nAn error has occurred: #{err.message}"
 end
 
 
